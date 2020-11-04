@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--
+    1.namespace属性的值和接口的全限定名保持一致
+    2.select标签中，id属性的值和接口中的方法名保持一致
+    3.通过#{}方式接收参数，如果只有一个参数，名字随意。
+    4.语句结束之后，必须不能加分号
+    5.在SpringBoot启动类上加@MapperScan(basePackages = "com.atguigu.gmall.publisher.mapper")
+-->
+<mapper namespace="com.atguigu.gmall.publisher.mapper.OrderWideMapper">
+    <select id="selectOrderAmountTotal" resultType="java.math.BigDecimal">
+        select
+            sum(final_detail_amount) sum_amount
+        from
+            t_order_wide_0523
+        where
+            dt =#{date}
+    </select>
+
+    <select id="selectOrderAmountHour" resultMap="resMap">
+        select
+            toHour(create_time) hr ,sum(final_detail_amount) am
+        from
+            t_order_wide_0523
+        where dt= #{date}
+            group by toHour(create_time)
+    </select>
+
+    <resultMap id="resMap" type="java.util.Map" autoMapping="true"></resultMap>
+</mapper>
